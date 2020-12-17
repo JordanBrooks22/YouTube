@@ -1,7 +1,7 @@
 {
   "name": "youtubeclone",
   "version": "1.0.0",
-  "description": "",
+  "description": "YouTube clone App using React.js, Axios, and CSS to build a responsive YouTube clone app to search for YouTube videos, channels, playlists, and live events via wrapper around Google YouTube API.  Technologies: React.js, Node.js, Express.js, MongoDB, Mongoose, CSS, Axios, Postman, YouTube API, Create React App",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -10,5 +10,13 @@
   "license": "ISC",
   "dependencies": {
     "mongoose": "^5.11.8"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JordanBrooks22/YouTube.git"
+  },
+  "bugs": {
+    "url": "https://github.com/JordanBrooks22/YouTube/issues"
+  },
+  "homepage": "https://github.com/JordanBrooks22/YouTube#readme"
 }
