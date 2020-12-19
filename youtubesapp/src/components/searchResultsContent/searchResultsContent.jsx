@@ -1,10 +1,10 @@
 import React from 'react';
 
-function DisplaysearchResults(){
+function DisplaySearchResults(){
     return(
         <h1>Hello World</h1>
     )
 }
 
-export default DisplaysearchResults
+export default DisplaySearchResults;
 

@@ -2,8 +2,11 @@ import logo from './logo.svg';
 import './App.css';
 import React from 'react';
 import axios from 'axios';
+import YouTubesContect from './components/youTubesContent/youTubesContent'
+import DisplaySearchResults from './components/searchResultsContent/searchResultsContent'
 
 import API from '../api';
+
 
 export default class tubesList extends React.Component {
   handleSubmit = event => {
