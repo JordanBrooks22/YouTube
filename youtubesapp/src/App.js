@@ -44,7 +44,7 @@ export default class tubesList extends React.Component {
     )
   }
   componentDidMount() {
-    axios.get('http://jsonplaceholder.typicode.com/users')
+    axios.get('https://www.googleapis.com/youtube/v3/search')
     .then(res => {
       const lists = res.data;
       this.setState({ lists });
@@ -81,3 +81,6 @@ function App() {
 }
 
 export default App;
+
+
+AIzaSyCG52Q-ShjUqfRFTliCzr2VFAie07Xx55M
