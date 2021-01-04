@@ -1,86 +1,82 @@
-import logo from './logo.svg';
+
 import './App.css';
 import React from 'react';
 import axios from 'axios';
-import YouTubesContect from './components/youTubesContent/youTubesContent'
+import YouTubesContect from './youTubesContent'
 import DisplaySearchResults from './components/searchResultsContent/searchResultsContent'
 
 import API from '../api';
 
 
-export default class tubesList extends React.Component {
-  handleSubmit = event => {
+class App extend React.Component {
+  constructor(props){
+    super(props);
+    this.state = {
+      viewingHomePage: true,
+      viewingSearchResults: false,
+      viewingVideoPlayer: false,
+      searchBarVal: '',
+    }
+    this.handleChange = this.handleChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+    
+  }
+
+  handleChange(event){
+      
+    let nam = event.target.name;
+    let val = event.target.value;
+    this.setState({[nam]: val});
+
+  }
+
+  handleSubmit(event){
+
     event.preventDefault();
 
-    API.delete('users/${this.state.id}')
-    .then(res => {
-      .then(res => {
-        console.log(res);
-        console.log(res.data)
+    this.setState({
+      viewingHomePage: false,
+      viewingSearchResults: true,
+      viewingVideoPlayer: true,
+    })
     
-    })
 
-    const user = {
-      name: this.state.name
-    };
-
-    axios.post('https://jsonplaceholder.typicode.com/users', { user })
-    .then(res => {
-      console.log(res);
-      console.log(res.data);
-    })
   }
+
+  
   render(){
-    return (
-      <div>
-        <form onSubmit={this.handleSubmit}>
-          <label>
-            Search :
-            <input type="text" onChange={this.handleChange} />
-          </label>
-          <button type="submut">Add</button>
-        </form>
-      </div>
-    )
-  }
-  componentDidMount() {
-    axios.get('https://www.googleapis.com/youtube/v3/search')
-    .then(res => {
-      const lists = res.data;
-      this.setState({ lists });
-    })
-  }
-  render() {
-    return (
-      <ul>
-        { this.state.lists.map(list => <li>{list.name}</li>)}
-      </ul>
-    )
-  }
-}
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    console.log('viewing home page?: ', this.state.viewingHomePage);
+    console.log('viewing Search results?: ', this.state.viewingSearchResults);
+    console.log('viewing video player?: ', this.state.viewingVideoPlayer);
+    console.log('Search Bar Value: ', this.state.searchBarVal)
+
+    if(this.state.viewingHomePage === true && this.state.viewingSearchResults === false && this.state.viewingVideoPlayer === false){
+      return(
+        <React.Fragment bg="dark">
+          <NavBar handleSearchbarChange={()=> this.handleChange} handleSearchSumbit={()=>this.handleSubmit}/>
+          <HomePageContent/>
+        </React.Fragment>
+      )
+    } else if(this.state.viewingHomePage === false && this.state.viewingSearchResults === true && this.state.viewingVideoPlayer === false){
+      return(
+        <React.Fragment bg="dark">
+          <NavBar handleSearchbarChange={()=> this.handleChange} handleSumbit={()=>this.handleSubmit}/>
+          <DisplaySearchResults/>
+        </React.Fragment>
+      )
+    } else if(this.state.viewingHomePage === false && this.state.viewingSearchResults === false && this.state.viewingVideoPlayer === true){
+      return(
+        <React.Fragment bg="dark">
+          <NavBar handleSearchbarChange={()=> this.handleChange} handleSumbit={()=>this.handleSubmit}/>
+          <HomePageContent/>
+        </React.Fragment>
+      )
+    }
+
+
+  }
+
 }
 
 export default App;
-
-
-AIzaSyCG52Q-ShjUqfRFTliCzr2VFAie07Xx55M
