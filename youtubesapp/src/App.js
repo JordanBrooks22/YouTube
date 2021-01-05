@@ -1,14 +1,11 @@
-
 import './App.css';
 import React from 'react';
 import axios from 'axios';
-import YouTubesContect from './youTubesContent'
-import DisplaySearchResults from './components/searchResultsContent/searchResultsContent'
-
+import tubesData from './tubesData.jsx';
 import API from '../api';
 
 
-class App extend React.Component {
+class App extends React.Component {
   constructor(props){
     super(props);
     this.state = {
