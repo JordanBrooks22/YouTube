@@ -21,9 +21,10 @@ const commentSchema = new mongoose.Schema({
 });
 
 const comments = mongoose.model('', replySchema, commentSchema)
+const replies = mongoose.model('replies', replySchema)
 
 
-function validateComments(product){
+function validateComments(comments){
     const schema = Joi.object({
         videoId: Joi.string().required(),
         likes: Joi.number(). default(),
@@ -37,3 +38,4 @@ function validateComments(product){
 exports.replySchema = replySchema;
 exports.validate;
 exports.comments;
+exports.replies
