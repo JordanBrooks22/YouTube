@@ -1,18 +1,18 @@
-const mongoose = require('mongoose');
+const connectDB = require('./startup/db');
 const express = require('express');
 const app = express();
-const validate = require('./routes/validate');
+const comments = require('./routes/products');
 
-mongoose
-.connect("mongodb+srv://Jordanb22:<Kadeezra18>@cluster0.5agus.mongodb.net/<Cluster0>?retryWrites=true&w=majority",
-{ useNewUrlParser: true, useUnifiedTopology: true })
-.then(() => console.log('Connected to MongoDB...'))
-.catch((err) => console.log(`Could not connect to MongoDB. ERROR: ${err}`));
+
+
+
+connectDB();
 
 app.use(express.json());
-app.use('api/validate', validate);
+app.use('/api/comments', comments);
 
 const port = process.env.PORT || 5000;
 app.listen(port, () => {
     console.log('Server started on port: ${port}');
+
 });
