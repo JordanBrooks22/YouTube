@@ -5,6 +5,8 @@ const config = require('config');
 
 
 function connectDB(){
+    let myconfig = config.get('mongoURI')
+    console.log(myconfig)
     mongoose.connect(
         config.get('mongoURI'),
         { useNewUrlParser: true, useUnifiedTopology: true})

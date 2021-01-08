@@ -1,14 +1,14 @@
-const mongoose = require('mongoose');
+const connectDB = require('./startup/db');
 const express = require('express');
-const app = express();
-const cors = require('cors');
 const validate = require('./routes/validate');
 
-app.use(cors());
+const app = express();
+
+connectDB();
 app.use(express.json());
-app.use('/api/comments', validate);
+app.use('/api/youtube', validate);
 
 const port = process.env.PORT || 5000;
 app.listen(port, () => {
-    console.log(`Server started on port: ${port}`);
+    console.log(`Serverstartedonport:${port}`);
 });
