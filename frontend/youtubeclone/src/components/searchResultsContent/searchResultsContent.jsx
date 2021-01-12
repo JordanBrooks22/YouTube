@@ -1,13 +1,12 @@
 import React from 'react';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import Button from 'react-bootstrap/Button'
 import Img from 'react-bootstrap/Image'
 
 
 const createSearchResults = (props)=>{
 
-    
+
     
     let results = props.collection.map((collection, index)=>{
 
@@ -17,21 +16,15 @@ const createSearchResults = (props)=>{
             return
         }
         return(
-            <div>
+            <div className="border-bottom border-dark">
                 <Row>
                     Title: {snippet.title}
                 </Row>
                 <Row>
-                    <Img src={snippet.thumbnails.medium.url} width={snippet.thumbnails.medium.width} height={snippet.thumbnails.medium.height} name='selectedVideo' id={id.videoId} onClick={props.selectAVideo()}/>
+                    <Img src={snippet.thumbnails.medium.url} width={snippet.thumbnails.medium.width} height={snippet.thumbnails.medium.height} name='selectedVideo' id={id.videoId} value={snippet.title} onClick={props.selectAVideo()}/>
                 </Row>
-                {/* <Row>
-                   <iframe src={`http://www.youtube.com/embed/${id.videoId}`}/>
-                </Row> */}
                 <Row>
                     Channel:  {snippet.channelTitle}
-                </Row>
-                <Row>
-                    ----------------------------------------------------------
                 </Row>
             </div>
         )
@@ -50,11 +43,8 @@ function DisplaySearchResults(props){
 
 return(
     <div>
-        <Row>
-            <Col xs={11}>
-                <h1>Now Searching: {props.searchingFor}</h1>
-            </Col>
-        </Row>
+        <Row/>
+        
         <Row>
             <Col xs={2}>
                 {/* blank */}

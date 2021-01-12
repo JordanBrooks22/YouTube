@@ -6,6 +6,7 @@ import DisplaySearchResults from './components/searchResultsContent/searchResult
 import youtube from './api/youtube'
 import axios from 'axios';
 import VideoPlayer from './components/videoPlayer/videoPlayer'
+import BuildComments from './components/displayComments/comments'
 
 
 //API KEY: AIzaSyBsU5PWYl_AesH3un5GvQ3gMu-3IZkpsxE
@@ -21,16 +22,39 @@ class App extends React.Component {
       searchTerm: '',
       searchCollection: [],
       selectedVideo: '',
+      selectedVideoTitle: '',
       relatedVideo: ``,
       comments: null,
-      newCommentBody: ''
+      mostRecentComments: [],
+      newCommentBody: '',
+      likes: 0,
+      dislikes: 0,
+      commentId: '',
+      count: 0,
+      reply: false
+
     }
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
-    this.selectVideo = this.selectVideo.bind(this);
+    this.selectVideo = this.selectVideo.bind();
     this.returnHome = this.returnHome.bind(this);
-    this.handleCommentSubmit= this.handleCommentSubmit.bind(this);
+    this.handleCommentSubmit = this.handleCommentSubmit.bind(this);
+    this.handleDislikeSubmit = this.handleDislikeSubmit.bind(this);
+    this.handleLikeSubmit = this.handleLikeSubmit.bind(this);
     
+  }
+
+  setComments= async (selectedVideo)=>{
+
+    console.log("Video ID in SetComments(): ", selectedVideo)
+    
+      axios.get('http://localhost:5000/api/comments/' + selectedVideo).then(response=>{
+        console.log('RESPONSE: ', response);
+        this.setState({
+          comments: response.data,
+          mostRecentComments: response.data
+        });
+    }).catch((ex)=>{console.log(ex)});
   }
 
   selectVideo = async (event)=>{
@@ -38,22 +62,21 @@ class App extends React.Component {
 
     let nam = event.target.name;
     let id = event.target.id;
+    let title = event.target.title;
+    console.log('HERE IS THE TITLE OF THE VIDEO!: ', title)
+    
+    console.log("Video ID Going Into SetComments(): ", id)
+    this.setComments(id);
+
     const response = await youtube.get('search', {
       params: {
         part: 'snippet',
         maxResults: 15,
         relatedVideo: null,
-        key: 'AIzaSyDG-7aya2AjiTl6Rns68VAgBHm3K3P0PRE',
+        key: 'AIzaSyDPFtKRXuxscC8cjE1JQucpp6CdTil-J88',
         
       }
     });
-
-    const video = this.state.selectedVideo;
-    const comments = await axios.get('http://localhost:5000/api/comments/', {
-      params: {
-        videoId: video
-      }
-    })
 
     this.setState({
       [nam]: id,
@@ -61,8 +84,12 @@ class App extends React.Component {
       viewingSearchResults: false,
       viewingVideoPlayer: true,
       relatedVideo: response,
-      comments: comments
+      selectedVideoTitle: title
+      
     })
+   
+    event.target.value = '';
+    
   }
 
   returnHome(event){
@@ -71,7 +98,18 @@ class App extends React.Component {
     this.setState({
       viewingHomePage: true,
       viewingSearchResults: false,
-      viewingVideoPlayer: false
+      viewingVideoPlayer: false,
+      searchBarVal: '',
+      searchTerm: '',
+      searchCollection: [],
+      selectedVideo: '',
+      relatedVideo: ``,
+      comments: [],
+      newCommentBody: '',
+      likes: 0,
+      dislikes: 0,
+      commentId: '',
+      loadComments: false
     })
   }
 
@@ -81,6 +119,68 @@ class App extends React.Component {
     let val = event.target.value;
     this.setState({[nam]: val});
 
+  }
+
+  handleDislikeSubmit = async (event)=>{
+    event.preventDefault();
+
+    let nam = event.target.name;
+    let val = event.target.value + 1;
+    let currentCommentId = event.target.id;
+    this.setState({
+      [nam]: val,
+      commentId: currentCommentId,
+    })
+
+    
+    console.log('handleRequest, commentId: http://localhost:5000/api/like/', currentCommentId);
+    axios.get('http://localhost:5000/api/comments/dislike/' + currentCommentId)
+    .then(response =>{
+      console.log("This is the response David wants to see: ", response)
+      this.setState({
+        dislikeslikes: 0,
+        selectedVideo: this.state.selectedVideo
+      });
+    });
+
+    let selectedVideo = this.state.selectedVideo;
+    
+    console.log('handle request')
+
+    this.setComments(selectedVideo);
+
+  
+  }
+
+  handleLikeSubmit = async (event) =>{
+    event.preventDefault();
+
+    let nam = event.target.name;
+    let val = event.target.value + 1;
+    let currentCommentId = event.target.id;
+    this.setState({
+      [nam]: val,
+      commentId: currentCommentId,
+    })
+
+
+    
+    console.log('handleRequest, commentId: http://localhost:5000/api/like/', currentCommentId);
+    axios.get('http://localhost:5000/api/comments/like/' + currentCommentId)
+    .then(response =>{
+      console.log("This is the response David wants to see: ", response)
+      this.setState({
+        likes: 0,
+        selectedVideo: this.state.selectedVideo
+      });
+    });
+
+    let selectedVideo = this.state.selectedVideo;
+    
+    console.log('handle request')
+
+    this.setComments(selectedVideo);
+    
   }
 
   handleCommentSubmit = async (event)=>{
@@ -96,6 +196,12 @@ class App extends React.Component {
     .then(res => {
       console.log(res);
     });
+
+    this.setState({newCommentBody: ''})
+
+    let selectedVideo = this.state.selectedVideo;
+    this.setComments(selectedVideo);
+    
 
   }
 
@@ -114,7 +220,7 @@ class App extends React.Component {
       params: {
         part: 'snippet',
         maxResults: 15,
-        key: 'AIzaSyAf1AqBRPpPuTaZruy5z971niRJkDnoj4I',
+        key: 'AIzaSyAhGU97XdEWIwuXNYYe5DPGNdrNDtcQ7ss',
         q: this.state.searchBarVal
       }
     });
@@ -133,11 +239,7 @@ class App extends React.Component {
 
   }
 
-  getCommentsByVideo(){
-
-  }
   
-
 
   render(){
 
@@ -149,8 +251,16 @@ class App extends React.Component {
     console.log('Search Collection: ', this.state.searchCollection);
     console.log('Search Collection Length: ', this.state.searchCollection.length);
     console.log('Selected Video: ', this.state.selectedVideo);
+    console.log('Selected Video Title: ', this.state.selectedVideoTitle);
     console.log('New Comment Body: ', this.state.newCommentBody);
-    console.log('Comment Data: ', this.state.comments)
+    console.log('Comment Data: ', this.state.comments);
+    console.log('CommentId: ', this.state.commentId);
+    console.log('Dislikes: ', this.state.dislikes);
+    console.log('Likes: ', this.state.likes);
+    console.log('APP.JS Comment ID: ', this.state.commentId);
+    console.log('---------------next state-----------------------')
+
+    
 
     if(this.state.viewingHomePage === true && this.state.viewingSearchResults === false && this.state.viewingVideoPlayer === false){
       return(
@@ -174,26 +284,40 @@ class App extends React.Component {
           searchResult={this.state.searchBarVal} 
           collection={this.state.searchCollection}
           searchingFor={this.state.searchBarVal}
-          selectAVideo = {()=>this.selectVideo}/>
+          selectAVideo = {()=>this.selectVideo}
+          commentData = {this.state.comments}
+          />
         </React.Fragment>
       )
     } else if(this.state.viewingHomePage === false && this.state.viewingSearchResults === false && this.state.viewingVideoPlayer === true){
+
       return(
         <React.Fragment>
           <NavBar 
           handleSearchbarChange={()=> this.handleChange} 
           handleSearch={()=>this.handleSubmit}
           returnHome={()=> this.returnHome}/>
+          
           <VideoPlayer 
+          count={this.state.count}
+          videoTitle={this.state.selectedVideoTitle}
+          searchResult={this.state.searchBarVal} 
+          collection={this.state.searchCollection}
+          searchingFor={this.state.searchBarVal}
           selectAVideo = {()=>this.selectVideo} 
           selectedVideo={this.state.selectedVideo}
-          commentList = {this.state.comments}
+          commentData = {this.state.comments}
           newCommentBody = {this.state.newCommentBody}
           handleCommentChange={()=> this.handleChange} 
           handleSubmit={()=>this.handleCommentSubmit}
+          handleDislikeSubmit = {()=>this.handleDislikeSubmit}
+          handleLikeSubmit = {()=>this.handleLikeSubmit}
+          setComments = {()=>this.setComments()}
           />
         </React.Fragment>
       )
+
+
     }
   }
 }

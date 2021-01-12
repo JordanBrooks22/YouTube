@@ -1,25 +1,28 @@
 import React from 'react';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import buildComments from '../dsiplayComments/comments';
-import newComment from '../newComment/newComment';
+import BuildComments from '../displayComments/comments'
+import newComment from '../newComment/newComment'
+import createSearchResults from '../searchResultsContent/searchResultsContent'
 
 
 function VideoPlayer(props){
 
     const currentlyPlaying = `https://www.youtube.com/embed/${props.selectedVideo}`
 
+    console.log('VideoPlayer props.CommentData: ', props.commentData)
+
     return(
         <div>
             <Row>
-                <h1></h1>
+                <h1>{props.videoTitle}</h1>
             </Row>
             <Row>
-                <Col xs={3}>
+                <Col xs={4}>
                 </Col>
-                <Col xs={8}>
-                <Row>
-                    <iframe width="560" height="315" src={currentlyPlaying} frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                <Col xs={5}>
+                    <Row>
+                    <iframe title={currentlyPlaying} width="560" height="315" src={currentlyPlaying} frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                        
                     </Row>
                     <Col xs={7}>
@@ -36,7 +39,12 @@ function VideoPlayer(props){
                         <Row>
                             <Col>
                                 <Row>
-                                    {buildComments(props)}
+                                    <BuildComments 
+                                    handleSubmit = {props.handleSubmit}
+                                    commentData = {props.commentData}
+                                    selectedVideo={props.selectedVideo} 
+                                    handleLikeSubmit={props.handleLikeSubmit} 
+                                    handleDislikeSubmit={props.handleDislikeSubmit} />
                                 </Row>
                             </Col>
                         </Row>
@@ -44,7 +52,9 @@ function VideoPlayer(props){
                     
                 </Col>
                 <Col xs={3}>
-                    {/* Recommended Content goes Here */}
+
+                    {createSearchResults(props)}    
+                
                 </Col>
             </Row>
         </div>
@@ -53,4 +63,3 @@ function VideoPlayer(props){
 
 
     export default VideoPlayer;
-                    

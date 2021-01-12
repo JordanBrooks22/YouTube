@@ -1,70 +1,90 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button'
-import Image from 'react-bootstrap/Image'
+import Container from 'react-bootstrap/Container'
+import axios from 'axios';
+import DisplayReplyBox from '../displayReplyBox/displayReplyBox'
 
 
-function buildComments(props){
+function BuildComments(props){
 
-    console.log("props.commentList: ", props.commentList.data)
-    let comments = [];
-    comments = props.commentList.data
 
-    let commentSection = comments.map((commentList, index)=>{
+    console.log('props.commentData: ', props.commentData);
+
+    
+
+    let commentSection;
+
+    
+ 
+    if(props.commentData === null){
+    commentSection = [<div>Loading...</div>];
+    }
+    else if (props.commentData !== null){ 
         
-        const { id, likes, dislikes, text, replies, postDate } = commentList
-
+        console.log('Hook Comment Data: ', props.commentData)
+        commentSection = props.commentData.map((commentList, commentId)=>{
         
-        return(
-            <div>
-                <Col name={id}>
+        const { _id, videoId,  likes, dislikes, text, replies, postDate } = commentList
+            console.log('COMMENT ID: ', _id)
+
+            if(replies !== undefined && replies.length < 0){
+                commentId = _id
+            }
+        
+            return(
+
+                <Container className="border border-dark">
                     
-                    <Row>
-                        <Col xs={3} >
-                            <Row>
-                                Anonymous
-                            </Row>
-                            <Row className="border border-dark">
-                                Picture    
-                                    <br/>
-                                    <br/>
-                                    <br/>
-                                Picture
-                            </Row>
-                        </Col>
-                        <Col xs={8} >    
-                            {text}
-                        </Col>
-                    </Row>
+                        <Row> {/* Commentor and Body */}
+                            <Col xs={5} className="border border-dark">
+                               Comment Body
+                            </Col>
+                            <Col xs={1}> </Col>
+                            <Col xs={6}>
+                                {text}
+                            </Col>
+                        </Row>
 
-                    <Row className="border-bottom border-dark">
-                        <Col xs= {7}  >
-                            <Button>Likes: {likes}</Button> <Button>Dislikes: {dislikes}</Button>
-                        </Col>
-                        <Col>
-                            <Button size="sm">
-                                Reply
-                            </Button>
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col sm={3}>
-                        </Col>
-                        <Col sm={9}>
-                            {buildComments(replies)}
-                        </Col>    
-                    </Row>
-                </Col>
-            </div>
-        )
-    })
-   
+                        <Col xs={12}></Col>
+                        <Row >{/* like, dislike, reply buttons */}
+                            <Col xs={7}>
+                                    <Button size="sm" onClick={props.handleLikeSubmit()} name="likes" id={_id} mainCommentId={commentId} val={likes}>Likes: {likes}</Button>
+                                    <Button size="sm" onClick={props.handleDislikeSubmit()} name="dislikes" id={_id} mainCommentId={commentId} val={dislikes}>Dislikes: {dislikes}</Button>
+                            </Col>
+                            <Col>
+                                
+                                {DisplayReplyBox(props, commentId)}
+                                
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col sm={3}/>
+                            <Col xs={9}>
+                                {/* {BuildComments(replies)} */}
+                            </Col>
+                            
+                        </Row>
+                    
+
+                </Container>
+                
+                    
+            
+            );
+        });
+  
+    }
+
+
+    
     return(
         commentSection
     )
 
+  
     
 }
 
-export default buildComments;
+export default BuildComments;
